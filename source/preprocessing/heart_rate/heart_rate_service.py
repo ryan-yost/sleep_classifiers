@@ -43,7 +43,7 @@ class HeartRateService(object):
 
     @staticmethod
     def get_cropped_file_path(subject_id):
-        return Constants.CROPPED_FILE_PATH.joinpath(subject_id + "_cleaned_hr.out")
+        return Constants.CROPPED_FILE_PATH.joinpath(subject_id + "_cleaned_bcg.out")
 
     @staticmethod
     def get_raw_file_path(subject_id):

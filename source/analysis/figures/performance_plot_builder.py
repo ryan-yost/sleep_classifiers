@@ -9,6 +9,10 @@ from source.analysis.performance.performance_summarizer import PerformanceSummar
 from source.analysis.performance.sleep_metrics_calculator import SleepMetricsCalculator
 from source.analysis.setup.feature_set_service import FeatureSetService
 from source.constants import Constants
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, cohen_kappa_score
+from sklearn.metrics import precision_recall_fscore_support
+import pandas as pd
 
 
 class PerformancePlotBuilder(object):
@@ -145,12 +149,37 @@ class PerformancePlotBuilder(object):
             number_of_subjects = len(raw_performances)
 
             plot_color = FeatureSetService.get_color(feature_set)
+            true_labels_all = []
+            predicted_labels_all = []
 
             for subject_index in range(number_of_subjects):
                 raw_performance = raw_performances[subject_index]
                 true_labels = raw_performance.true_labels
                 predicted_labels = PerformanceBuilder.apply_threshold_three_class(raw_performance, wake_threshold,
                                                                                   rem_threshold)
+
+                true_labels_all.extend(true_labels)
+                predicted_labels_all.extend(predicted_labels)
+
+                #class_labels = ['Wake', 'NREM', 'REM']
+
+                # # Compute the confusion matrix with row and column labels
+                # confusion = confusion_matrix(true_labels, predicted_labels, labels=[0, 1, 2])
+                #
+                # PerformancePlotBuilder.get_stats(true_labels, predicted_labels, class_labels)
+                #
+                # # Print the confusion matrix with labels
+                # print("Confusion Matrix:")
+                # print("      Predicted")
+                # print("      " + " ".join([f"{label:<6}" for label in class_labels]))
+                # print("True")
+                # for i, row_label in enumerate(class_labels):
+                #     row = [f"{value:<6}" for value in confusion[i]]
+                #     print(f"{row_label}    " + " ".join(row))
+                # print()
+
+
+
 
                 actual_sol = SleepMetricsCalculator.get_sleep_onset_latency(true_labels)
                 predicted_sol = SleepMetricsCalculator.get_sleep_onset_latency(predicted_labels)
@@ -212,6 +241,26 @@ class PerformancePlotBuilder(object):
                 else:
                     ax[2, 1].scatter(actual_time_in_nrem, time_in_nrem_diff, c=plot_color)
 
+            true_labels_all = np.array(true_labels_all)
+            predicted_labels_all = np.array(predicted_labels_all)
+
+            class_labels = ['Wake', 'NREM', 'REM']
+
+            # Compute the confusion matrix with row and column labels
+            confusion = confusion_matrix(true_labels_all, predicted_labels_all, labels=[0, 1, 2])
+
+            PerformancePlotBuilder.get_stats(true_labels_all, predicted_labels_all, class_labels)
+
+            # Print the confusion matrix with labels
+            print("Confusion Matrix:")
+            print("      Predicted")
+            print("      " + " ".join([f"{label:<6}" for label in class_labels]))
+            print("True")
+            for i, row_label in enumerate(class_labels):
+                row = [f"{value:<6}" for value in confusion[i]]
+                print(f"{row_label}    " + " ".join(row))
+            print()
+
         plt.tight_layout()
         file_save_name = str(
             Constants.FIGURE_FILE_PATH) + '/figure_' + classifier_summary.attributed_classifier.name + '_' + \
@@ -219,3 +268,34 @@ class PerformancePlotBuilder(object):
 
         plt.savefig(file_save_name, dpi=300)
         plt.close()
+
+
+    def get_stats(label, pred, class_names):
+        # Calculate precision, recall, F1 score, and support for each class
+        precision, recall, f1, support = precision_recall_fscore_support(label, pred, average=None)
+
+        # Calculate accuracy
+        accuracy = accuracy_score(label, pred)
+
+        # Calculate weighted F1 score
+        weighted_f1 = f1_score(label, pred, average='weighted')
+
+        # Calculate Cohen's kappa coefficient
+        kappa = cohen_kappa_score(label, pred)
+
+        print('Walch BCG')
+        print('')
+        # Print the metrics with class names
+        for i in range(len(precision)):
+            print(f"Class {class_names[i]}:")
+            print(f"  Precision: {precision[i]:.3f}")
+            print(f"  Recall: {recall[i]:.3f}")
+            print(f"  F1 Score: {f1[i]:.3f}")
+            print(f"  n (from expert): {support[i]}")
+
+        print(f"Accuracy: {accuracy:.3f}")
+        print(f"Weighted F1 Score: {weighted_f1:.3f}")
+        print(f"Cohen's Kappa Coefficient: {kappa:.3f}")
+
+
+        return

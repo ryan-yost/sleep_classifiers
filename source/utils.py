@@ -20,6 +20,8 @@ def get_project_root() -> Path:
 
 
 def get_classifiers():
+    #return [AttributedClassifier(name='k-Nearest Neighbors', classifier=KNeighborsClassifier(weights='distance'))]
+
     return [AttributedClassifier(name='Random Forest',
                                  classifier=RandomForestClassifier(n_estimators=100, max_features=1.0,
                                                                    max_depth=10,
@@ -37,10 +39,12 @@ def get_classifiers():
 
 
 def get_base_feature_sets():
-    return [[FeatureType.count],
-            [FeatureType.heart_rate],
-            [FeatureType.count, FeatureType.heart_rate],
-            [FeatureType.count, FeatureType.heart_rate, FeatureType.cosine]]
+    return [[FeatureType.count, FeatureType.heart_rate, FeatureType.cosine]]
+
+    # return [[FeatureType.count],
+    #         [FeatureType.heart_rate],
+    #         [FeatureType.count, FeatureType.heart_rate],
+    #         [FeatureType.count, FeatureType.heart_rate, FeatureType.cosine]]
     # 12-23-19 note: I'm making the default base feature use cosine, not circadian model
     # so that it doesn't require MATLAB to run
 

@@ -5,6 +5,8 @@ from source.preprocessing.psg.psg_label_service import PSGLabelService
 from source.preprocessing.raw_data_processor import RawDataProcessor
 from source.preprocessing.time.time_based_feature_service import TimeBasedFeatureService
 
+import numpy as np
+
 
 class FeatureBuilder(object):
 
@@ -14,11 +16,19 @@ class FeatureBuilder(object):
             print("Getting valid epochs...")
         valid_epochs = RawDataProcessor.get_valid_epochs(subject_id)
 
+        #valid_epoch_timestamps = [epoch.timestamp for epoch in valid_epochs]
+        #valid_epoch_timestamps_array = np.array(valid_epoch_timestamps)
+        #np.savetxt('8000685_valid_epochs.txt', valid_epoch_timestamps_array, fmt='%f')
+
+        #for epoch in valid_epochs:
+        #    print(epoch.timestamp)
+
         if Constants.VERBOSE:
             print("Building features...")
         FeatureBuilder.build_labels(subject_id, valid_epochs)
         FeatureBuilder.build_from_wearables(subject_id, valid_epochs)
         FeatureBuilder.build_from_time(subject_id, valid_epochs)
+
 
     @staticmethod
     def build_labels(subject_id, valid_epochs):

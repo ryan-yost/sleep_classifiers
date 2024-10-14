@@ -74,6 +74,11 @@ class PerformanceBuilder(object):
         predicted_labels = []
 
         number_of_samples = np.shape(raw_performance.class_probabilities)[0]
+
+        #for index in range(number_of_samples):
+            #max_column_index = np.argmax(raw_performance.class_probabilities[index])
+            #predicted_labels.append(max_column_index)
+
         for index in range(number_of_samples):
             if raw_performance.class_probabilities[index, 0] >= wake_threshold:
                 predicted_labels.append(ThreeClassLabel.wake.value)

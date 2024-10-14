@@ -13,6 +13,10 @@ from source.analysis.setup.subject_builder import SubjectBuilder
 from source.analysis.tables.table_builder import TableBuilder
 from source.constants import Constants
 
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+
 
 def figures_leave_one_out_sleep_wake_performance():
     attributed_classifier = AttributedClassifier(name='Neural Net',
@@ -30,10 +34,16 @@ def figures_leave_one_out_sleep_wake_performance():
 
 
 def figures_leave_one_out_three_class_performance():
-    attributed_classifier = AttributedClassifier(name='Neural Net',
-                                                 classifier=MLPClassifier(activation='relu',
-                                                                          hidden_layer_sizes=(15, 15, 15),
-                                                                          max_iter=1000, alpha=0.01, solver='lbfgs'))
+    # attributed_classifier = AttributedClassifier(name='Neural Net',
+    #                                              classifier=MLPClassifier(activation='relu',
+    #                                                                       hidden_layer_sizes=(15, 15, 15),
+    #                                                                       max_iter=1000, alpha=0.01, solver='lbfgs'))
+    attributed_classifier = AttributedClassifier(name='k-Nearest Neighbors', classifier=KNeighborsClassifier(weights='distance'))
+    # attributed_classifier = AttributedClassifier(name='Random Forest',
+    #                                              classifier=RandomForestClassifier(n_estimators=100, max_features=1.0,
+    #                                                                                max_depth=10, min_samples_split=10,
+    #                                                                                min_samples_leaf=32, bootstrap=True))
+
 
     feature_sets = utils.get_base_feature_sets()
 
@@ -44,8 +54,17 @@ def figures_leave_one_out_three_class_performance():
 
 
 def figure_leave_one_out_roc_and_pr():
-    classifiers = utils.get_classifiers()
+
     feature_sets = utils.get_base_feature_sets()
+
+    #classifiers = utils.get_classifiers()
+    # Uncomment to just use MLP:
+    # classifiers = [AttributedClassifier(name='Neural Net',
+    #                                     classifier=MLPClassifier(activation='relu', hidden_layer_sizes=(15, 15, 15),
+    #                                     max_iter=2000, alpha=0.01, solver='adam', verbose=False, n_iter_no_change=20))]
+    classifiers = [AttributedClassifier(name='Random Forest',
+                         classifier=RandomForestClassifier(n_estimators=100, max_features=1.0,max_depth=10,
+                                                           min_samples_split=10, min_samples_leaf=32,bootstrap=True))]
 
     for attributed_classifier in classifiers:
         if Constants.VERBOSE:
@@ -183,13 +202,13 @@ def figures_compare_time_based_features():
 
 if __name__ == "__main__":
     start_time = time.time()
-    figure_leave_one_out_roc_and_pr()
+    #figure_leave_one_out_roc_and_pr()
     #
-    # figures_mc_sleep_wake()
-    # figures_mc_three_class()
+    #figures_mc_sleep_wake()
+    #figures_mc_three_class()
     #
     # figures_leave_one_out_sleep_wake_performance()
-    # figures_leave_one_out_three_class_performance()
+    figures_leave_one_out_three_class_performance()
     #
     # figures_mesa_sleep_wake()
     # figures_mesa_three_class()
@@ -197,4 +216,4 @@ if __name__ == "__main__":
     # figures_compare_time_based_features()
     end_time = time.time()
 
-    print('Elapsed time to generate figure: ' + str((end_time - start_time) / 60) + ' minutes')
+    print('Elapsed time to run entire thing: ' + str((end_time - start_time) / 60) + ' minutes')

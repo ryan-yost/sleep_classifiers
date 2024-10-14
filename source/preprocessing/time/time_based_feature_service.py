@@ -75,7 +75,7 @@ class TimeBasedFeatureService(object):
     @staticmethod
     def cosine_proxy(time):
         sleep_drive_cosine_shift = 5
-        return -1 * np.math.cos((time - sleep_drive_cosine_shift * Constants.SECONDS_PER_HOUR) *
+        return 1 * np.math.cos((time - sleep_drive_cosine_shift * Constants.SECONDS_PER_HOUR) *
                                 2 * np.math.pi / Constants.SECONDS_PER_DAY)
 
     @staticmethod

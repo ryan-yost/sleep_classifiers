@@ -18,7 +18,7 @@ class HeartRateFeatureService(object):
 
     @staticmethod
     def get_path(subject_id):
-        return Constants.FEATURE_FILE_PATH.joinpath(subject_id + '_hr_feature.out')
+        return Constants.FEATURE_FILE_PATH.joinpath(subject_id + '_bcg_feature.out')
 
     @staticmethod
     def write(subject_id, feature):

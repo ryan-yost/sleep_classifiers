@@ -13,13 +13,13 @@ def run_preprocessing(subject_set):
     start_time = time.time()
 
     for subject in subject_set:
-        print("Cropping data from subject " + str(subject) + "...")
-        RawDataProcessor.crop_all(str(subject))
+         print("Cropping data from subject " + str(subject) + "...")
+         RawDataProcessor.crop_all(str(subject))
 
-    if Constants.INCLUDE_CIRCADIAN:
-        ActivityCountService.build_activity_counts()  # This uses MATLAB, but has been replaced with a python implementation
-        CircadianService.build_circadian_model()      # Both of the circadian lines require MATLAB to run
-        CircadianService.build_circadian_mesa()       # INCLUDE_CIRCADIAN = False by default because most people don't have MATLAB
+    #if Constants.INCLUDE_CIRCADIAN:
+    #    ActivityCountService.build_activity_counts()  # This uses MATLAB, but has been replaced with a python implementation
+    #    CircadianService.build_circadian_model()      # Both of the circadian lines require MATLAB to run
+    #    CircadianService.build_circadian_mesa()       # INCLUDE_CIRCADIAN = False by default because most people don't have MATLAB
 
     for subject in subject_set:
         FeatureBuilder.build(str(subject))
@@ -28,8 +28,10 @@ def run_preprocessing(subject_set):
     print("Execution took " + str((end_time - start_time) / 60) + " minutes")
 
 
-subject_ids = SubjectBuilder.get_all_subject_ids()
+#subject_ids = SubjectBuilder.get_all_subject_ids()
+subject_ids = ['3509524', '5132496', '5498603', '4018081', '9106476', '8686948', '4314139', '1818471', '8173033',
+              '7749105', '759667', '8000685', '6220552', '844359', '1360686', '8692923']
 run_preprocessing(subject_ids)
 
-for subject_id in subject_ids:
-    DataPlotBuilder.make_data_demo(subject_id, False)
+#for subject_id in subject_ids:
+#    DataPlotBuilder.make_data_demo(subject_id, False)

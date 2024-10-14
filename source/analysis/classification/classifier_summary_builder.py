@@ -25,7 +25,8 @@ class SleepWakeClassifierSummaryBuilder(object):
     @staticmethod
     def build_leave_one_out(attributed_classifier: AttributedClassifier,
                             feature_sets: [[FeatureType]]) -> ClassifierSummary:
-        subject_ids = SubjectBuilder.get_all_subject_ids()
+        #subject_ids = SubjectBuilder.get_all_subject_ids()
+        subject_ids = ['3509524', '5132496', '5498603', '4018081', '9106476', '8686948', '4314139', '1818471', '8173033', '7749105', '759667', '8000685', '6220552', '844359', '1360686', '8692923']
         subject_dictionary = SubjectBuilder.get_subject_dictionary()
 
         data_splits = TrainTestSplitter.leave_one_out(subject_ids)
@@ -108,6 +109,7 @@ class ThreeClassClassifierSummaryBuilder(object):
             else:
                 raw_performance_results = ClassifierService.run_three_class(data_splits, attributed_classifier,
                                                                             subject_dictionary, feature_set)
+
             performance_dictionary[tuple(feature_set)] = raw_performance_results
 
         return ClassifierSummary(attributed_classifier, performance_dictionary)
